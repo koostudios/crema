@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 )
 
@@ -142,7 +143,11 @@ func main() {
 	})
 
 	// Starts the Application
-	log.Fatal(http.ListenAndServe(":1337", r))
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
+	log.Fatal(http.ListenAndServe(":"+port, r))
 }
 
 // Function sendJson sets the content type and relevant headers before sending a Message
