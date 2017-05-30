@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/badoux/checkmail"
 	"github.com/gorilla/mux"
 	"html/template"
@@ -91,6 +92,8 @@ func main() {
 			ApiKey:   os.Getenv("APIKEY"),
 			Url:      os.Getenv("URL"),
 		}
+
+		fmt.Println(config)
 		// Post to Mailchimp
 		resp, err := http.PostForm(config.Protocol+config.ApiKey+"@"+config.Url, url.Values{
 			"from":    {"crema@koostudios.com"},
@@ -108,6 +111,7 @@ func main() {
 
 		// Read response from Mailchimp
 		body, err := ioutil.ReadAll(resp.Body)
+		fmt.Println(body)
 		if err != nil {
 			sendJson(w, r, Message{
 				Status: "error",
