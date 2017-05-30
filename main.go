@@ -93,7 +93,6 @@ func main() {
 			Url:      os.Getenv("URL"),
 		}
 
-		fmt.Println(config)
 		// Post to Mailchimp
 		resp, err := http.PostForm(config.Protocol+config.ApiKey+"@"+config.Url, url.Values{
 			"from":    {"crema@koostudios.com"},
@@ -101,13 +100,13 @@ func main() {
 			"subject": {"New submission"},
 			"html":    {html},
 		})
+		fmt.Println(resp.Body)
 		if err != nil {
 			sendJson(w, r, Message{
 				Status: "error",
 				Body:   "Could not send email.",
 			})
 		}
-		defer resp.Body.Close()
 
 		// Read response from Mailchimp
 		body, err := ioutil.ReadAll(resp.Body)
@@ -119,6 +118,8 @@ func main() {
 			})
 			return
 		}
+
+		defer resp.Body.Close()
 
 		// Sends response from Mailchimp
 		sendJson(w, r, Message{
