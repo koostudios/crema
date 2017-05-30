@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/badoux/checkmail"
 	"github.com/gorilla/mux"
 	"html/template"
@@ -100,7 +99,6 @@ func main() {
 			"subject": {"New submission"},
 			"html":    {html},
 		})
-		fmt.Println(resp.Body)
 		if err != nil {
 			sendJson(w, r, Message{
 				Status: "error",
@@ -110,7 +108,6 @@ func main() {
 
 		// Read response from Mailchimp
 		body, err := ioutil.ReadAll(resp.Body)
-		fmt.Println(body)
 		if err != nil {
 			sendJson(w, r, Message{
 				Status: "error",
