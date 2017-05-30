@@ -11,7 +11,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strings"
 )
 
 // From config.json
@@ -87,29 +86,11 @@ func main() {
 		t.Execute(&doc, r.Form)
 		html := doc.String()
 
-		// Read configuration file
-		file, err := ioutil.ReadFile("./config.json")
-		if err != nil {
-			sendJson(w, r, Message{
-				Status: "error",
-				Body:   "Could not open config.json.",
-			})
-			return
+		config := Config{
+			Protocol: os.Getenv("PROTOCOL"),
+			ApiKey:   os.Getenv("APIKEY"),
+			Url:      os.Getenv("URL"),
 		}
-
-		// Set up decode
-		dec := json.NewDecoder(strings.NewReader(string(file)))
-		config := Config{}
-
-		// Decode json file contents
-		if err = dec.Decode(&config); err != nil {
-			sendJson(w, r, Message{
-				Status: "error",
-				Body:   "Could not decode config.json",
-			})
-			return
-		}
-
 		// Post to Mailchimp
 		resp, err := http.PostForm(config.Protocol+config.ApiKey+"@"+config.Url, url.Values{
 			"from":    {"crema@koostudios.com"},
